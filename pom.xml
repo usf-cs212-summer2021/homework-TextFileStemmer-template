@@ -4,7 +4,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.usfca.cs.cs212</groupId>
-	<artifactId>HomeworkName</artifactId>
+	<artifactId>TextFileStemmer</artifactId>
 	<version>2021-01</version>
 
 	<properties>
@@ -62,6 +62,13 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<version>5.7.0</version>
+		</dependency>
+
+		<!-- for stemming words -->
+		<dependency>
+			<groupId>org.apache.opennlp</groupId>
+			<artifactId>opennlp-tools</artifactId>
+			<version>1.9.3</version>
 		</dependency>
 	</dependencies>
 </project>
