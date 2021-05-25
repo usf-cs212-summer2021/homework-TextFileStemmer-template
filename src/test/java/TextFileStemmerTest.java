@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -22,8 +21,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.launcher.TagFilter;
@@ -271,7 +268,6 @@ public class TextFileStemmerTest {
 	 */
 	@Nested
 	@Tag("approach")
-	@TestInstance(Lifecycle.PER_CLASS)
 	public class E_ApproachTests {
 		/**
 		 * Checks to see if the File class was imported.
@@ -330,26 +326,12 @@ public class TextFileStemmerTest {
 			});
 		}
 		
-		/** The source code for TextFileStemmer. */
-		private String source;
-
 		/**
-		 * Loads the entire source code as a String object.
-		 *
-		 * @throws IOException if an IO error occurs
+		 * Causes this group of tests to fail if the other non-approach tests are
+		 * not yet passing.
 		 */
-		@BeforeEach
-		public void setup() throws IOException {
-			Path path = Path.of("src", "main", "java",
-					TextFileStemmer.class.getSimpleName() + ".java");
-			source = Files.readString(path, StandardCharsets.UTF_8);
-		}
-		
-		/**
-		 * Fails all approach tests if all other tests are not yet passing.
-		 */
-		@BeforeAll
-		public void enable() {
+		@Test
+		public void testOthersPassing() {
 			var request = LauncherDiscoveryRequestBuilder.request()
 					.selectors(DiscoverySelectors.selectClass(TextFileStemmerTest.class))
 					.filters(TagFilter.excludeTags("approach"))
@@ -365,7 +347,22 @@ public class TextFileStemmerTest {
 			launcher.execute(request);
 
 			Assertions.assertEquals(0, listener.getSummary().getTotalFailureCount(),
-					"Other tests must pass before appoarch tests pass!");
+					"Must pass other tests to earn credit for approach group!");
+		}
+		
+		/** The source code for TextFileStemmer. */
+		private String source;
+
+		/**
+		 * Loads the entire source code as a String object.
+		 *
+		 * @throws IOException if an IO error occurs
+		 */
+		@BeforeEach
+		public void setup() throws IOException {
+			Path path = Path.of("src", "main", "java",
+					TextFileStemmer.class.getSimpleName() + ".java");
+			source = Files.readString(path, StandardCharsets.UTF_8);
 		}
 	}
 }
