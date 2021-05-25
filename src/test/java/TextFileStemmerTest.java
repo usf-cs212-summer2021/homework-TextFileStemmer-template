@@ -7,25 +7,36 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.platform.engine.discovery.DiscoverySelectors;
+import org.junit.platform.launcher.TagFilter;
+import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
+import org.junit.platform.launcher.core.LauncherFactory;
+import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 
 /**
  * Tests of the {@link TextFileStemmer} class.
  *
  * @author CS 212 Software Development
  * @author University of San Francisco
- * @version Spring 2021
+ * @version Summer 2021
  *
  * @see TextFileStemmer
  */
@@ -259,22 +270,9 @@ public class TextFileStemmerTest {
 	 * Attempts to check for issues with the approach.
 	 */
 	@Nested
+	@Tag("approach")
+	@TestInstance(Lifecycle.PER_CLASS)
 	public class E_ApproachTests {
-		/** The source code for TextFileStemmer. */
-		private String source;
-
-		/**
-		 * Loads the entire source code as a String object.
-		 *
-		 * @throws IOException if an IO error occurs
-		 */
-		@BeforeEach
-		public void setup() throws IOException {
-			Path path = Path.of("src", "main", "java",
-					TextFileStemmer.class.getSimpleName() + ".java");
-			source = Files.readString(path, StandardCharsets.UTF_8);
-		}
-
 		/**
 		 * Checks to see if the File class was imported.
 		 */
@@ -330,6 +328,44 @@ public class TextFileStemmerTest {
 				Path nullPath = Path.of("nowhere");
 				TextFileStemmer.uniqueStems(nullPath);
 			});
+		}
+		
+		/** The source code for TextFileStemmer. */
+		private String source;
+
+		/**
+		 * Loads the entire source code as a String object.
+		 *
+		 * @throws IOException if an IO error occurs
+		 */
+		@BeforeEach
+		public void setup() throws IOException {
+			Path path = Path.of("src", "main", "java",
+					TextFileStemmer.class.getSimpleName() + ".java");
+			source = Files.readString(path, StandardCharsets.UTF_8);
+		}
+		
+		/**
+		 * Fails all approach tests if all other tests are not yet passing.
+		 */
+		@BeforeAll
+		public void enable() {
+			var request = LauncherDiscoveryRequestBuilder.request()
+					.selectors(DiscoverySelectors.selectClass(TextFileStemmerTest.class))
+					.filters(TagFilter.excludeTags("approach"))
+					.build();
+
+			var launcher = LauncherFactory.create();
+			var listener = new SummaryGeneratingListener();
+
+			Logger logger = Logger.getLogger("org.junit.platform.launcher");
+			logger.setLevel(Level.SEVERE);
+
+			launcher.registerTestExecutionListeners(listener);
+			launcher.execute(request);
+
+			Assertions.assertEquals(0, listener.getSummary().getTotalFailureCount(),
+					"Other tests must pass before appoarch tests pass!");
 		}
 	}
 }

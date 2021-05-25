@@ -3,7 +3,7 @@ TextFileStemmer
 
 ![Points](../../blob/badges/points.svg)
 
-For this homework assignment, you will create a class that is able to clean and parse text into stemmed words. Use `UTF8` and try-with-resources when writing your files. Do not use the [`java.io.File`](https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/io/File.html) class.
+For this homework assignment, you will create a class that is able to clean and parse text into stemmed words. Use `UTF8` and try-with-resources when writing your files. Do not use the [`java.io.File`](https://www.cs.usfca.edu/~cs212/javadoc/api/java.base/java/io/File.html) class.
 
 The `TextParser` class is already provided for you.
 
@@ -18,9 +18,3 @@ Below are some hints that may help with this homework assignment:
   - Look for opportunities to reduce duplicate code. For example, you could create a new helper method that is reused in multiple other methods.
 
 These hints are *optional*. There may be multiple approaches to solving this homework.
-
-## Requirements ##
-
-See the Javadoc and `TODO` comments in the template code in the `src/main/java` directory for additional details. You must pass the tests provided in the `src/test/java` directory. Do not modify any of the files in the `src/test` directory.
-
-See the [Homework Guides](https://usf-cs212-spring2021.github.io/guides/homework/) for additional details on homework requirements and submission.
